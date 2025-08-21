@@ -1,6 +1,7 @@
-package marquez.logging.parser;
+package marquez.logging.parserprocessor;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -8,9 +9,8 @@ import marquez.logging.config.LogParserConfig;
 import marquez.logging.db.LogParserDao;
 
 /**
- * Асинхронный процессор для сохранения логов.
- * Использует внутреннюю очередь для буферизации событий и фоновый поток
- * для их обработки и сохранения в базу данных через LogParserDao.
+ * Асинхронный процессор для сохранения логов. Использует внутреннюю очередь для буферизации событий
+ * и фоновый поток для их обработки и сохранения в базу данных через LogParserDao.
  */
 public class LogParserProcessor {
   private final BlockingQueue<ILoggingEvent> eventQueue = new LinkedBlockingQueue<>();
@@ -53,14 +53,15 @@ public class LogParserProcessor {
     while (running.get()) {
       try {
         ILoggingEvent event = eventQueue.take();
-        System.out.println(
-            "LOG PARSER PROCESSOR: Processing log event: "
-                + event.getLevel()
-                + " - "
-                + event.getFormattedMessage());
-        logParserDao.saveLog(event);
+
+        // → Определяем аудит-событие
+        Map<String, Object> auditData = MarquezAuditDetector.detect(event);
+        if (auditData == null) continue; // не аудитим это событие
+
+        // → Сохраняем в БД
+        logParserDao.saveAuditLog(auditData);
+
       } catch (InterruptedException e) {
-        System.out.println("LOG PARSER PROCESSOR: Interrupted, stopping...");
         Thread.currentThread().interrupt();
         break;
       } catch (Exception e) {

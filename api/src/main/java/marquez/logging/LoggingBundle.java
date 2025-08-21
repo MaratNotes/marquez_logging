@@ -6,9 +6,8 @@ import io.dropwizard.setup.Environment;
 import marquez.logging.factories.LogParserAppenderFactory;
 
 /**
- * Класс для регистрации кастомного аппендера в системе.
- * Регистрирует фабрику LogParserAppenderFactory в Jackson,
- * что позволяет использовать ее в конфигурации YAML.
+ * Класс для регистрации кастомного аппендера в системе. Регистрирует фабрику
+ * LogParserAppenderFactory в Jackson, что позволяет использовать ее в конфигурации YAML.
  */
 public class LoggingBundle implements ConfiguredBundle<Object> {
   @Override

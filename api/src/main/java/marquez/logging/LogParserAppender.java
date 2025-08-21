@@ -5,9 +5,8 @@ import ch.qos.logback.core.AppenderBase;
 import marquez.logging.parserprocessor.LogParserProcessor;
 
 /**
- * Кастомный аппендер Logback, для перехвата события логирования.
- * Также передает их в LogParserProcessor для асинхронной обработки.
- * Реализует стандартный жизненный цикл AppenderBase.
+ * Кастомный аппендер Logback, для перехвата события логирования. Также передает их в
+ * LogParserProcessor для асинхронной обработки. Реализует стандартный жизненный цикл AppenderBase.
  */
 public class LogParserAppender extends AppenderBase<ILoggingEvent> {
   private LogParserProcessor processor;

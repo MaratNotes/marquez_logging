@@ -14,9 +14,8 @@ import marquez.logging.config.LogParserConfig;
 import marquez.logging.parserprocessor.LogParserProcessor;
 
 /**
- * Фабрика для создания LogParserAppender, интегрированная с Dropwizard.
- * Конфигурируется через YAML-файл, создает и инициализирует цепочку:
- * Appender -> Processor -> DAO.
+ * Фабрика для создания LogParserAppender, интегрированная с Dropwizard. Конфигурируется через
+ * YAML-файл, создает и инициализирует цепочку: Appender -> Processor -> DAO.
  */
 @JsonTypeName("log-parser")
 public class LogParserAppenderFactory implements AppenderFactory<ILoggingEvent> {
