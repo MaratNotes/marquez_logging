@@ -1,0 +1,51 @@
+server:
+  applicationConnectors:
+  - type: http
+    port: ${MARQUEZ_PORT:-5000}
+    httpCompliance: RFC7230_LEGACY
+  adminConnectors:
+  - type: http
+    port: ${MARQUEZ_ADMIN_PORT:-5001}
+
+db:
+  driverClass: org.postgresql.Driver
+  url: jdbc:postgresql://${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/marquez
+  user: marquez
+  password: marquez
+
+migrateOnStartup: true
+
+graphql:
+  enabled: true
+
+# Упрощенная конфигурация логгирования - Logback сам загрузит logback.xml
+logging:
+  loggers:
+    marquez: DEBUG
+  appenders:
+    - type: console
+    - type: file
+      currentLogFilename: /usr/src/app/logs/dropwizard.log
+      archivedLogFilenamePattern: /usr/src/app/logs/dropwizard-%d.log.gz
+      archivedFileCount: 5
+      
+    # Кастомный аппендер для разбора и сохранения логов в БД
+    - type: log-parser
+      parser:
+        dbUrl: jdbc:postgresql://log-db:5432/logdb
+        dbUser: loguser
+        dbPassword: logpass
+
+search:
+  enabled: ${SEARCH_ENABLED:-true}
+  scheme: http
+  host: ${SEARCH_HOST:-opensearch}
+  port: ${SEARCH_PORT:-9200}
+  username: admin
+  password: admin
+
+tags:
+  - name: PII
+    description: Personally identifiable information
+  - name: SENSITIVE
+    description: Contains sensitive information
